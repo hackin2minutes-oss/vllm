@@ -1,0 +1,10 @@
+name: vLLM fork - Sawone Red check
+target:
+  type: mock
+  mode: vulnerable
+canary: "SRCANARY-7A3F9B21C0DE4E55"
+seed: "vllm-fork-2026"
+fail_on: high
+output:
+  dir: sawone-red-reports
+  formats: [html, json, markdown, sarif]
