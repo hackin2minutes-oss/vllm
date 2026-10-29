@@ -1,0 +1,30 @@
+name: sawone-red-scan
+
+on:
+  push:
+    branches: [sawone-red-scan]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  redteam:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run Sawone Red gate against the built-in mock
+        uses: hackin2minutes-oss/sawone-red@v1
+        with:
+          config: sawone-red.yaml
+          fail_on: high
+          sarif_output: sawone-red.sarif
+          report_dir: sawone-red-reports
+      - name: Keep the reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sawone-red-reports
+          path: |
+            sawone-red-reports
+            sawone-red.sarif
