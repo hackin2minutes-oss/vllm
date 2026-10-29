@@ -1,0 +1,29 @@
+name: AI Code Governance (test)
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+  security-events: write
+
+jobs:
+  governance:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: AI code governance
+        id: governance
+        uses: hackin2minutes-oss/ai-code-governance@main
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          fail-on-risk: 'true'
+          strict-dependency-check: 'true'
+      - name: Upload findings to Code scanning
+        if: always() && steps.governance.outputs.sarif-path != ''
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: ${{ steps.governance.outputs.sarif-path }}
+          category: ai-code-governance
